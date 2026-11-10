@@ -3,6 +3,7 @@ from collections.abc import Generator
 
 from sqlalchemy import create_engine, event, text
 from sqlalchemy.engine import Engine
+from sqlalchemy.engine.url import make_url
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from app.config import get_settings
@@ -13,11 +14,14 @@ class Base(DeclarativeBase):
 
 
 def create_database_engine(database_url: str) -> Engine:
+    url = make_url(database_url)
+    if url.get_backend_name() == "postgresql" and url.drivername != "postgresql+psycopg":
+        url = url.set(drivername="postgresql+psycopg")
     connect_args = {"check_same_thread": False} if database_url.startswith("sqlite") else {}
     engine_options = {"pool_pre_ping": True, "connect_args": connect_args}
-    if os.getenv("VERCEL") == "1" and not database_url.startswith("sqlite"):
+    if os.getenv("VERCEL") == "1" and url.get_backend_name() == "postgresql":
         engine_options.update({"pool_size": 1, "max_overflow": 0, "pool_recycle": 300})
-    database_engine = create_engine(database_url, **engine_options)
+    database_engine = create_engine(url, **engine_options)
     if database_url.startswith("sqlite"):
         @event.listens_for(database_engine, "connect")
         def enable_sqlite_foreign_keys(connection, _record) -> None:

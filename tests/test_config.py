@@ -2,12 +2,28 @@ import pytest
 from pydantic import ValidationError
 
 from app.config import Settings
+from app.database import create_database_engine
 
 
 def test_postgresql_urls_use_installed_psycopg_driver() -> None:
     settings = Settings(_env_file=None, database_url="postgresql://user:pass@db.example/app")
 
     assert settings.database_url == "postgresql+psycopg://user:pass@db.example/app"
+
+
+@pytest.mark.parametrize(
+    "database_url",
+    [
+        "postgresql://user:pass@db.example/app",
+        "postgresql+psycopg2://user:pass@db.example/app",
+    ],
+)
+def test_database_engine_uses_psycopg3_for_postgresql(database_url: str) -> None:
+    engine = create_database_engine(database_url)
+    try:
+        assert engine.url.drivername == "postgresql+psycopg"
+    finally:
+        engine.dispose()
 
 
 def test_vercel_requires_a_secret_and_persistent_database(monkeypatch) -> None:
