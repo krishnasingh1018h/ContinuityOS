@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.app.models import (
+from app.models import (
     AuditEvent,
     Claim,
     ClaimEvidence,

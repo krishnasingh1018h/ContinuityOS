@@ -4,9 +4,9 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
-from backend.app.config import get_settings
-from backend.app.database import Base, get_db
-from backend.app.main import app
+from app.config import get_settings
+from app.database import Base, get_db
+from app.main import app
 
 
 @pytest.fixture(autouse=True)

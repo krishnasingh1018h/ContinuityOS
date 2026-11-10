@@ -4,7 +4,7 @@ from io import BytesIO
 import pytest
 from fastapi import HTTPException, UploadFile
 
-from backend.app.parsers import extract_document
+from app.parsers import extract_document
 
 
 def test_markdown_parser_preserves_utf8_and_rejects_path_components():

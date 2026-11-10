@@ -3,11 +3,11 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from backend.app.config import get_settings
-from backend.app.database import get_db
-from backend.app.models import User
-from backend.app.schemas import UserInput
-from backend.app.security import SESSION_SECONDS, create_session_token, get_current_user, hash_password, verify_password
+from app.config import get_settings
+from app.database import get_db
+from app.models import User
+from app.schemas import UserInput
+from app.security import SESSION_SECONDS, create_session_token, get_current_user, hash_password, verify_password
 
 router = APIRouter(tags=["auth"])
 

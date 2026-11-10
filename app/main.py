@@ -8,8 +8,8 @@ from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.exc import SQLAlchemyError
 
-from backend.app import database
-from backend.app.routes import router as api_router
+from app import database
+from app.routes import router as api_router
 
 logger = logging.getLogger(__name__)
 

@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.demo import SYNTHETIC_AURORA_SOURCES, seed_aurora
-from backend.app.models import (
+from app.database import get_db
+from app.demo import SYNTHETIC_AURORA_SOURCES, seed_aurora
+from app.models import (
     Claim,
     Conflict,
     MissingEvidenceItem,
@@ -16,13 +16,13 @@ from backend.app.models import (
     Sensitivity,
     User,
 )
-from backend.app.schemas import (
+from app.schemas import (
     ConflictInput,
     ConflictResolutionInput,
     MissingEvidenceInput,
 )
-from backend.app.security import get_current_user, get_project_membership, require_roles, visible_sensitivities
-from backend.app.services import add_audit, visible_claim
+from app.security import get_current_user, get_project_membership, require_roles, visible_sensitivities
+from app.services import add_audit, visible_claim
 
 router = APIRouter(tags=["review"])
 
@@ -124,7 +124,7 @@ def resolve_conflict(
     conflict.status = body.status
     conflict.rationale = body.rationale
     conflict.resolved_by = actor.id
-    from backend.app.services import utc_now
+    from app.services import utc_now
 
     conflict.resolved_at = utc_now()
     add_audit(db, project_id, actor.id, "conflict_resolved", {"status": body.status})
@@ -211,8 +211,8 @@ def get_readiness(
     membership: ProjectMembership = Depends(require_roles(ProjectRole.OWNER, ProjectRole.REVIEWER)),
     db: Session = Depends(get_db),
 ) -> dict:
-    from backend.app.models import ClaimCategory, ClaimStatus, EvidenceTier
-    from backend.app.services import verify_claim_evidence
+    from app.models import ClaimCategory, ClaimStatus, EvidenceTier
+    from app.services import verify_claim_evidence
 
     claims = db.scalars(
         select(Claim).where(
@@ -292,7 +292,7 @@ def list_audit_events(
     _membership: ProjectMembership = Depends(require_roles(ProjectRole.OWNER, ProjectRole.REVIEWER)),
     db: Session = Depends(get_db),
 ) -> list[dict]:
-    from backend.app.models import AuditEvent
+    from app.models import AuditEvent
 
     events = db.scalars(
         select(AuditEvent).where(AuditEvent.project_id == project_id).order_by(AuditEvent.created_at.desc())

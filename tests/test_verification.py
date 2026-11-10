@@ -2,8 +2,8 @@ import pytest
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from backend.app.database import Base, create_database_engine
-from backend.app.models import (
+from app.database import Base, create_database_engine
+from app.models import (
     Claim,
     ClaimCategory,
     ClaimEvidence,
@@ -15,7 +15,7 @@ from backend.app.models import (
     SourceSpan,
     User,
 )
-from backend.app.services import evidence_tier
+from app.services import evidence_tier
 
 
 def test_invalid_citation_downgrades_claim_evidence_tier() -> None:

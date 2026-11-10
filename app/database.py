@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, event, text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
-from backend.app.config import get_settings
+from app.config import get_settings
 
 
 class Base(DeclarativeBase):

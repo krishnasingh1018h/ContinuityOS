@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.models import (
+from app.database import get_db
+from app.models import (
     Claim,
     ClaimCategory,
     ClaimStatus,
@@ -17,9 +17,9 @@ from backend.app.models import (
     Sensitivity,
     User,
 )
-from backend.app.schemas import ClaimInput, ReviewInput
-from backend.app.security import get_current_user, get_project_membership, require_roles, visible_sensitivities
-from backend.app.services import (
+from app.schemas import ClaimInput, ReviewInput
+from app.security import get_current_user, get_project_membership, require_roles, visible_sensitivities
+from app.services import (
     add_audit,
     claim_response,
     create_evidence,

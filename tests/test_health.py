@@ -1,8 +1,8 @@
 from fastapi.testclient import TestClient
 from sqlalchemy.exc import SQLAlchemyError
 
-from backend.app import database
-from backend.app.main import app
+from app import database
+from app.main import app
 
 
 def test_health_check_reports_api_and_database_status() -> None:

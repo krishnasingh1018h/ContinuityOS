@@ -4,13 +4,13 @@ from types import SimpleNamespace
 
 from pydantic import SecretStr
 
-from backend.app.openrouter import (
+from app.openrouter import (
     ClaimCandidate,
     OpenRouterError,
     SourceLine,
     extract_claim_candidates,
 )
-from backend.app.routes import reconstruction
+from app.routes import reconstruction
 
 
 def create_account(client, email):

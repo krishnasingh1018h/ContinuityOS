@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from backend.app.database import Base
-from backend.app.models import Project, ProjectMembership, ProjectRole, User
+from app.database import Base
+from app.models import Project, ProjectMembership, ProjectRole, User
 
 
 def test_project_membership_persists_project_scoped_role() -> None:

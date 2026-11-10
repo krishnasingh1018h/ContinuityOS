@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.app.config import get_settings
-from backend.app.database import get_db
-from backend.app.models import (
+from app.config import get_settings
+from app.database import get_db
+from app.models import (
     Claim,
     ClaimCategory,
     ClaimEvidence,
@@ -17,14 +17,14 @@ from backend.app.models import (
     SourceSpan,
     User,
 )
-from backend.app.openrouter import (
+from app.openrouter import (
     MAX_SOURCE_TEXT_CHARACTERS,
     OpenRouterError,
     SourceLine,
     extract_claim_candidates,
 )
-from backend.app.security import get_current_user, get_project_membership, visible_sensitivities
-from backend.app.services import add_audit, claim_response, create_evidence, visible_claims
+from app.security import get_current_user, get_project_membership, visible_sensitivities
+from app.services import add_audit, claim_response, create_evidence, visible_claims
 
 router = APIRouter(tags=["reconstruction"])
 

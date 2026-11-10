@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.app.models import Claim, EvidenceTier
+from app.models import Claim, EvidenceTier
 
 
 def create_account(client, email):

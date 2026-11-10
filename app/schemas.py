@@ -4,7 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 from typing import Annotated, Literal
 
-from backend.app.models import ClaimCategory, ClaimStatus, EvidenceTier, ProjectRole, Sensitivity
+from app.models import ClaimCategory, ClaimStatus, EvidenceTier, ProjectRole, Sensitivity
 
 EmailValue = Annotated[str, StringConstraints(min_length=6, max_length=320, pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")]
 

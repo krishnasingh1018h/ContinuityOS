@@ -6,12 +6,12 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from backend.app.config import get_settings
-from backend.app.database import get_db
-from backend.app.models import ProjectMembership, ProjectRole, Sensitivity, Source, SourceSpan, User
-from backend.app.parsers import extract_document
-from backend.app.security import get_current_user, get_project_membership, require_roles, visible_sensitivities
-from backend.app.services import add_audit
+from app.config import get_settings
+from app.database import get_db
+from app.models import ProjectMembership, ProjectRole, Sensitivity, Source, SourceSpan, User
+from app.parsers import extract_document
+from app.security import get_current_user, get_project_membership, require_roles, visible_sensitivities
+from app.services import add_audit
 
 router = APIRouter(tags=["sources"])
 

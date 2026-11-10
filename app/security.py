@@ -11,9 +11,9 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.app.config import get_settings
-from backend.app.database import get_db
-from backend.app.models import ProjectMembership, ProjectRole, User
+from app.config import get_settings
+from app.database import get_db
+from app.models import ProjectMembership, ProjectRole, User
 
 SESSION_SECONDS = 12 * 60 * 60
 bearer_scheme = HTTPBearer(auto_error=False)

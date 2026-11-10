@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.app.models import (
+from app.models import (
     Claim,
     ClaimCategory,
     ClaimStatus,
@@ -18,7 +18,7 @@ from backend.app.models import (
     Source,
     SourceSpan,
 )
-from backend.app.services import add_audit, create_evidence, evidence_tier
+from app.services import add_audit, create_evidence, evidence_tier
 
 SYNTHETIC_AURORA_SOURCES = [
     {
