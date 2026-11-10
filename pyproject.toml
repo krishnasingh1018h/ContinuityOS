@@ -35,3 +35,5 @@ include = ["backend*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+[tool.vercel]
+entrypoint = "backend.app.main:app"
