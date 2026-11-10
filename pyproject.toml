@@ -36,4 +36,4 @@ include = ["backend*"]
 testpaths = ["tests"]
 pythonpath = ["."]
 [tool.vercel]
-entrypoint = "backend.app.main:app"
+entrypoint = "app.main:app"
