@@ -1,15 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "python -m pip install -e . && alembic upgrade head",
   "functions": {
-    "backend/app/main.py": {
+    "app/main.py": {
       "maxDuration": 60
     }
   },
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "backend/app/main.py"
+      "dest": "app/main.py"
     }
   ]
 }
