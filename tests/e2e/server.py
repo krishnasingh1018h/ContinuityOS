@@ -24,7 +24,7 @@ def main() -> None:
         import uvicorn
 
         uvicorn.run(
-            "backend.app.main:app",
+            "app.main:app",
             host="127.0.0.1",
             port=8766,
             log_level="warning",

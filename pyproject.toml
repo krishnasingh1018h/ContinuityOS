@@ -37,6 +37,3 @@ testpaths = ["tests"]
 pythonpath = ["."]
 [tool.vercel]
 entrypoint = "app.main:app"
-
-[tool.vercel.fastapi.static]
-exclude = true
