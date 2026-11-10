@@ -53,7 +53,8 @@ counts or the proposal's extraction/performance targets as achieved.
   Provider errors are explicit and do not silently fall back.
 - GitHub/Drive connectors, background jobs, exports/share links, and
   acknowledgment notifications are not configured.
-- GitHub Actions and deployment configuration are not included.
+- Vercel deployment is supported, but requires a separately provisioned
+  persistent PostgreSQL database and production environment variables.
 - The app is a functional development MVP, not a production-ready identity or
   compliance system. There is no email verification, password recovery,
   rate-limiting, or independent external security assessment.
@@ -67,16 +68,17 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 if (!(Test-Path .env)) { Copy-Item .env.example .env }
 .\.venv\Scripts\python.exe -m alembic upgrade head
-.\.venv\Scripts\python.exe -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
 The default database is a local SQLite file. To use PostgreSQL, set
 `DATABASE_URL` in `.env` to a PostgreSQL connection URL and start that database
-before applying migrations. Set `SECRET_KEY` to a private, random value of at
-least 32 characters and keep the same key across server workers. The provided
-placeholder is for local setup only; replace it in `.env` before running the
-app. When deploying behind HTTPS, set `SESSION_COOKIE_SECURE=true`; do not
-commit `.env` or real secrets.
+before applying migrations. Standard `postgresql://` and `postgres://` URLs
+are configured to use the project's psycopg 3 driver. Set `SECRET_KEY` to a
+private, random value of at least 32 characters and keep the same key across
+all server instances. The provided placeholder is for local setup only;
+replace it in `.env` before running the app. When deploying behind HTTPS, set
+`SESSION_COOKIE_SECURE=true`; do not commit `.env` or real secrets.
 
 To enable AI-assisted claim extraction, add `OPENROUTER_API_KEY` to `.env` and
 optionally set `OPENROUTER_MODEL` (defaults to `openai/gpt-4o-mini`). Restart
@@ -90,6 +92,51 @@ Visit `http://127.0.0.1:8000` for the application and
 `http://127.0.0.1:8000/docs` for the interactive API documentation.
 After signing in, use the **Theme** selector in the top bar to switch among
 Clean light, Dark operations, and Editorial themes.
+
+## Deploy to Vercel
+
+The FastAPI application is configured at `app.main:app`. Vercel serves it as a
+Python Function; its local SQLite default is deliberately rejected on Vercel
+because function filesystems are ephemeral.
+
+1. Provision a persistent PostgreSQL database (for example, Neon or another
+   managed PostgreSQL provider). Use a separate database for Preview
+   deployments so preview data and migrations cannot affect Production.
+2. Import this repository into Vercel with the repository root as the project
+   root. The existing `pyproject.toml` and `vercel.json` select the Python
+   entrypoint, set the function timeout, and keep static assets behind the
+   application's security-header middleware.
+3. Configure these environment variables in Vercel for Production and Preview:
+   - `DATABASE_URL`: the managed PostgreSQL connection URL.
+   - `SECRET_KEY`: generate a private random value with
+     `python -c "import secrets; print(secrets.token_urlsafe(48))"` and keep it
+     identical across instances. Do not reuse the example value.
+   - `SESSION_COOKIE_SECURE`: `true`.
+   - `OPENROUTER_API_KEY`: optional. Set this only if you want to enable
+     AI-assisted extraction; the key remains server-side.
+   - `OPENROUTER_MODEL`: optional; defaults to `openai/gpt-4o-mini`.
+
+   Never commit `.env` or paste secrets into source files. The app fails fast
+   on Vercel if the secret key, secure-cookie setting, or persistent database
+   configuration is missing or unsafe.
+4. Before sending traffic to a new deployment, run the Alembic migrations
+   against its configured production database from a trusted environment:
+
+   ```powershell
+   .\.venv\Scripts\python.exe -m alembic upgrade head
+   ```
+
+   Load the same `DATABASE_URL` securely into that environment first. Do not
+   run schema migrations from each serverless function invocation.
+5. Deploy from the Vercel dashboard or with the Vercel CLI. Verify
+   `https://<deployment-domain>/health` returns
+   `{"status":"ok","database":"ok"}` and confirm the sign-in page and API
+   endpoints work over HTTPS.
+
+Uploaded source contents are stored in PostgreSQL, not the function's local
+filesystem. Keep database backups and access controls enabled. OpenRouter
+receives role-visible source text only when an authorized user explicitly runs
+reconstruction; review its data handling terms before enabling it.
 
 ## Test
 
@@ -126,15 +173,15 @@ development database.
 
 ## Architecture
 
-- `backend/app/routes/` contains endpoint groups for account, project,
+- `app/routes/` contains endpoint groups for account, project,
   ingestion, reconstruction, review, and handover workflows.
-- `backend/app/security.py` validates signed sessions, project memberships,
+- `app/security.py` validates signed sessions, project memberships,
   role requirements, and role-based sensitivity clearance.
-- `backend/app/services.py` contains citation checks and shared
+- `app/services.py` contains citation checks and shared
   authorization-aware claim queries.
-- `backend/app/openrouter.py` contains the optional structured OpenRouter
+- `app/openrouter.py` contains the optional structured OpenRouter
   client and candidate validation; the API key remains server-side.
-- `backend/app/static/` contains the responsive browser interface.
+- `app/static/` contains the responsive browser interface.
 - `backend/migrations/` contains versioned Alembic schema changes.
 - `tests/` contains parser, model, API integration/security, and browser
   end-to-end tests.

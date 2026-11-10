@@ -103,7 +103,7 @@ def extract_claim_candidates(
         method="POST",
     )
     try:
-        with urllib.request.urlopen(request, timeout=60) as response:
+        with urllib.request.urlopen(request, timeout=45) as response:
             response_body = response.read(MAX_PROVIDER_RESPONSE_BYTES + 1)
     except urllib.error.HTTPError as error:
         logger.warning("OpenRouter request failed with HTTP status %s", error.code)

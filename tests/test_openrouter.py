@@ -98,7 +98,7 @@ def test_openrouter_request_parses_structured_candidates_without_sending_source_
     result = extract_claim_candidates(lines, "test-openrouter-key", "mock/provider-model")
 
     assert result[0].exact_quote == lines[0].text
-    assert captured["timeout"] == 60
+    assert captured["timeout"] == 45
     assert captured["request"].full_url == "https://openrouter.ai/api/v1/chat/completions"
     assert captured["request"].get_header("Authorization") == "Bearer test-openrouter-key"
     request_payload = json.loads(captured["request"].data)

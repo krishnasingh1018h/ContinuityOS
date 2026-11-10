@@ -1,3 +1,4 @@
+import os
 from collections.abc import Generator
 
 from sqlalchemy import create_engine, event, text
@@ -13,7 +14,10 @@ class Base(DeclarativeBase):
 
 def create_database_engine(database_url: str) -> Engine:
     connect_args = {"check_same_thread": False} if database_url.startswith("sqlite") else {}
-    database_engine = create_engine(database_url, pool_pre_ping=True, connect_args=connect_args)
+    engine_options = {"pool_pre_ping": True, "connect_args": connect_args}
+    if os.getenv("VERCEL") == "1" and not database_url.startswith("sqlite"):
+        engine_options.update({"pool_size": 1, "max_overflow": 0, "pool_recycle": 300})
+    database_engine = create_engine(database_url, **engine_options)
     if database_url.startswith("sqlite"):
         @event.listens_for(database_engine, "connect")
         def enable_sqlite_foreign_keys(connection, _record) -> None:

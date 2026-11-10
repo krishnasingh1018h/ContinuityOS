@@ -27,13 +27,16 @@ dev = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["backend*"]
+include = ["app*", "backend*"]
 
 [tool.setuptools.package-data]
-"backend.app" = ["static/*"]
+"app" = ["static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
 [tool.vercel]
 entrypoint = "app.main:app"
+
+[tool.vercel.fastapi.static]
+exclude = true
